@@ -48,15 +48,22 @@ static bool isFirstAccess = YES;
     
     NSArray *resultados = [resultado objectForKey:@"results"];
     NSMutableArray *filmes = [[NSMutableArray alloc] init];
+    NSString *ano = [[NSString alloc] init];
     
     for (NSDictionary *item in resultados) {
         Filme *filme = [[Filme alloc] init];
         [filme setNome:[item objectForKey:@"trackName"]];
-        [filme setTrackId:[item objectForKey:@"trackId"]];
         [filme setArtista:[item objectForKey:@"artistName"]];
         [filme setDuracao:[item objectForKey:@"trackTimeMillis"]];
         [filme setGenero:[item objectForKey:@"primaryGenreName"]];
         [filme setPais:[item objectForKey:@"country"]];
+        
+        NSString *year = [item objectForKey:@"releaseDate"];
+        ano = [year substringToIndex:4];
+        
+        [filme setLancamento:ano];
+        
+        
         [filmes addObject:filme];
     }
     

@@ -10,12 +10,20 @@
 
 @interface iTunesManager : NSObject
 
+@property NSArray *dados;
+
+@property NSMutableArray *filmes;
+@property NSMutableArray *musicas;
+@property NSMutableArray *ebooks;
+@property NSMutableArray *podcasts;
+
+
 /**
  * gets singleton object.
  * @return singleton
  */
 + (iTunesManager*)sharedInstance;
 
-- (NSArray *)buscarMidias:(NSString *)termo;
+- (void)buscarMidias:(NSString *)termo;
 
 @end

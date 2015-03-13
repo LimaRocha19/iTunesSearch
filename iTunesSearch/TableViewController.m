@@ -10,10 +10,11 @@
 #import "TableViewCell.h"
 #import "iTunesManager.h"
 #import "Entidades/Filme.h"
+#import "Entidades/Musica.h"
+#import "Entidades/Podcast.h"
+#import "Entidades/Ebook.h"
 
-@interface TableViewController () {
-    NSArray *midias;
-}
+@interface TableViewController ()
 
 @end
 
@@ -31,10 +32,11 @@
     
     itunes = [iTunesManager sharedInstance];
     
+    
 #warning Necessario para que a table view tenha um espaco em relacao ao topo, pois caso contrario o texto ficara atras da barra superior
     
     
-    _header = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tableview.bounds.size.width, 70)];
+    
     
     _busca.translucent = YES;
 
@@ -49,24 +51,114 @@
 
 #pragma mark - Metodos do UITableViewDataSource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 4;
+}
+
+//-(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+//    NSArray *sectionNames = [[NSArray alloc] initWithObjects:@"Filmes", @"Músicas", @"Podcasts", @"Ebooks", nil];
+//    return sectionNames;
+//}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSString *title;
+    switch (section) {
+        case 0:
+            title = @"Filmes";
+            break;
+            
+        case 1:
+            title = @"Músicas";
+            break;
+            
+        case 2:
+            title = @"Podcasts";
+            break;
+            
+        case 3:
+            title = @"Ebook";
+            break;
+            
+        default:
+            break;
+    }
+    return title;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [midias count];
+    NSInteger count;
+    switch (section) {
+        case 0:
+            count = [itunes.filmes count];
+            break;
+            
+        case 1:
+            count = [itunes.musicas count];
+            break;
+        
+        case 2:
+            count = [itunes.podcasts count];
+            break;
+            
+        case 3:
+            count = [itunes.ebooks count];
+            break;
+        
+        default:
+            break;
+    }
+    return count;
+}
+
+-(BOOL) prefersStatusBarHidden {
+    return YES;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    TableViewCell *celula = [self.tableview dequeueReusableCellWithIdentifier:@"celulaPadrao"];
-    Filme *filme = [midias objectAtIndex:indexPath.row];
-    
-    [celula.nome setText:filme.nome];
-    [celula.artista setText:filme.artista];
-    [celula.duracao setText: [NSString stringWithFormat:@"%d min", [filme.duracao intValue]/6000]];
-    [celula.genero setText:filme.genero];
-    [celula.pais setText:filme.pais];
-    [celula.lancamento setText:filme.lancamento];
+//    NSMutableArray *aux = [itunes.dados objectAtIndex:(indexPath.section)];
+    TableViewCell *celula = [[TableViewCell alloc] init];
+    celula = [self.tableview dequeueReusableCellWithIdentifier:@"celulaPadrao"];
+
+    if (indexPath.section == 0) {
+        Filme *mid = [[itunes filmes]objectAtIndex:indexPath.row];
+//        Filme *mid = [aux objectAtIndex:indexPath.row];
+        [celula.nome setText:mid.nome];
+        [celula.artista setText:mid.artista];
+        [celula.duracao setText: [NSString stringWithFormat:@"%d min", [mid.duracao intValue]/6000]];
+        [celula.genero setText:mid.genero];
+        [celula.pais setText:mid.pais];
+        [celula.lancamento setText:mid.lancamento];
+    }
+    else if (indexPath.section == 1) {
+        Musica *mid = [[itunes musicas]objectAtIndex:indexPath.row];
+//        Musica *mid = [aux objectAtIndex:indexPath.row];
+        [celula.nome setText:mid.nome];
+        [celula.artista setText:mid.artista];
+        [celula.duracao setText: [NSString stringWithFormat:@"%d min", [mid.duracao intValue]/6000]];
+        [celula.genero setText:mid.genero];
+        [celula.pais setText:mid.pais];
+        [celula.lancamento setText:mid.lancamento];
+    }
+    else if (indexPath.section == 2) {
+        Podcast *mid = [[itunes podcasts]objectAtIndex:indexPath.row];
+//        Podcast *mid = [aux objectAtIndex:indexPath.row];
+        [celula.nome setText:mid.nome];
+        [celula.artista setText:mid.artista];
+        [celula.duracao setText: [NSString stringWithFormat:@"%d min", [mid.duracao intValue]/6000]];
+        [celula.genero setText:mid.genero];
+        [celula.pais setText:mid.pais];
+        [celula.lancamento setText:mid.lancamento];
+    }
+    else if (indexPath.section == 3) {
+        Ebook *mid = [[itunes ebooks]objectAtIndex:indexPath.row];
+//        Ebook *mid = [aux objectAtIndex:indexPath.row];
+        [celula.nome setText:mid.nome];
+        [celula.artista setText:mid.artista];
+        [celula.duracao setText:@" "];
+        [celula.genero setText:mid.genero];
+        [celula.pais setText:mid.pais];
+        [celula.lancamento setText:mid.lancamento];
+    }
     
     return celula;
 }
@@ -81,7 +173,7 @@
     searchBar = _busca;
     NSString *termo = [[NSString alloc] init];
     termo = searchBar.text;
-    midias = [itunes buscarMidias:termo];
+    [itunes buscarMidias:termo];
     [searchBar endEditing:YES];
     [self.tableview reloadData];
 }

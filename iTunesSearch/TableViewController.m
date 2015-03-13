@@ -173,6 +173,17 @@
     searchBar = _busca;
     NSString *termo = [[NSString alloc] init];
     termo = searchBar.text;
+    
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^[A-Z0-9a-z]{1,100}$" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSUInteger numberOfMatches = [regex numberOfMatchesInString:termo options:0 range:NSMakeRange(0, [termo length])];
+    
+    if (!numberOfMatches) {
+        UIAlertView *alerta = [[UIAlertView alloc] initWithTitle:@"Alerta" message:@"Caracteres inválidos" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alerta show];
+        return;
+    }
+    
     [itunes buscarMidias:termo];
     [searchBar endEditing:YES];
     [self.tableview reloadData];
